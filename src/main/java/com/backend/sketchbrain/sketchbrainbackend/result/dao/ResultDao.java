@@ -28,4 +28,11 @@ public class ResultDao {
         String query = "SELECT * FROM result WHERE id='" + id + "'";
         return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Result.class));
     }
+
+    public int insertResult(Result result){
+        String query = "INSERT INTO result(user,data_name,model_name,result) VALUES(?,?,?,?)";
+        return jdbcTemplate.update(query,
+                new Object[]{result.getUser(), result.getData_name(), result.getModel_name(), result.getResult()});
+
+    }
 }

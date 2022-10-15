@@ -24,4 +24,8 @@ public class ResultService {
     public List<Result> getResultListById(String id){
         return resultDao.listById(id);
     }
+
+    public int insertResult(Result result){
+        return resultDao.insertResult(result);
+    }
 }

@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ResultController {
     private final ResultService resultService;
 
+
     @ResponseBody
     @GetMapping
     public Map<String, Object> resultAllLis(
@@ -25,6 +26,17 @@ public class ResultController {
         Map<String, Object> result = new ConcurrentHashMap<>();
         result.put("result", list);
         return result;
+    }
+
+    @ResponseBody
+    @PutMapping
+    public Map<String,Object> insertResult(
+            @RequestBody Result result
+    ){
+        resultService.insertResult(result);
+        Map<String,Object> response = new ConcurrentHashMap<>();
+        response.put("success", true);
+        return response;
     }
 
     @ResponseBody
@@ -47,6 +59,9 @@ public class ResultController {
             @PathVariable String id
     ){
         List<Result> list = resultService.getResultListById(id);
+        if(list.isEmpty()){
+            throw new ResultExceptions(ResultErrorCodeImpl.UKNOWN_ID_REFERED);
+        }
         Map<String, Object> result = new ConcurrentHashMap<>();
         result.put("result", list);
         return result;

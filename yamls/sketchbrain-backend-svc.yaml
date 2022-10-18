@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+   name: sketchbrain-backend-svc
+   labels:
+       app: sketchbrain-backend
+spec:
+   type: NodePort
+   ports:
+   - name: backend-port
+     port: 8080
+     targetPort: 8080
+     nodePort: 30801
+   selector:
+       app: sketchbrain-backend

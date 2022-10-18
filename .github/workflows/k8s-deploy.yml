@@ -3,8 +3,6 @@ name: Deploy in K8S
 on:
   pull_request:
     branches: [main, develop]
-  push:
-    branches: [feat_github_action]
 
 jobs:
   build:
@@ -39,11 +37,11 @@ jobs:
      - name: Push Docker Image to DockerHub
        run : docker push ${{ secrets.DOCKER_USER }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_TAG }}
 
-     #- name: Set K8S Config
-     #  run: mkdir ~/.kube && echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+     - name: Set K8S Config
+       run: mkdir ~/.kube && echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
 
-     #- name: Change Image Name In Yaml
-     #  run: sed -i 's/#VERSION_STRING#/${{ secrets.DOCKER_USER }}\/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_TAG }}/g' ${{ env.DEPLOY_YAML }}
+     - name: Change Image Name In Yaml
+       run: sed -i 's/#VERSION_STRING#/${{ secrets.DOCKER_USER }}\/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_TAG }}/g' ${{ env.DEPLOY_YAML }}
 
-     #- name: Deploy on K8S
-     #  run: kubectl apply -f ${{ env.DEPLOY_YAML }}
+     - name: Deploy on K8S
+       run: kubectl apply -f ${{ env.DEPLOY_YAML }}

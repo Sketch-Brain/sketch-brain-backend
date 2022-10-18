@@ -5,12 +5,14 @@ import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.Result
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
 import com.backend.sketchbrain.sketchbrainbackend.result.service.ResultService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping(path="/api/result")
@@ -22,6 +24,7 @@ public class ResultController {
     @GetMapping
     public Map<String, Object> resultAllLis(
     ){
+        log.info("[GET] /api/result : get result list");
         List<Result> list = resultService.getAllResultList();
         Map<String, Object> result = new ConcurrentHashMap<>();
         result.put("result", list);
@@ -33,6 +36,7 @@ public class ResultController {
     public Map<String,Object> insertResult(
             @RequestBody Result result
     ){
+        log.info("[PUT] /api/result : insert result");
         resultService.insertResult(result);
         Map<String,Object> response = new ConcurrentHashMap<>();
         response.put("success", true);
@@ -44,6 +48,7 @@ public class ResultController {
     public Map<String,Object> resultListByUser(
             @PathVariable String user
     ){
+        log.info("[GET] /api/result/user/{} : get result list filtered by {}",user,user);
         List<Result> list = resultService.getResultListByUser(user);
         if(list.isEmpty()){
             throw new ResultExceptions(ResultErrorCodeImpl.UKNOWN_USER_REFERED);
@@ -58,6 +63,7 @@ public class ResultController {
     public Map<String,Object> resultListById(
             @PathVariable String id
     ){
+        log.info("[GET] /api/result/id/{} : get result list filtered by {}",id,id);
         List<Result> list = resultService.getResultListById(id);
         if(list.isEmpty()){
             throw new ResultExceptions(ResultErrorCodeImpl.UKNOWN_ID_REFERED);

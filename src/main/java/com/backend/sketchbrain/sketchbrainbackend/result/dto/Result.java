@@ -1,6 +1,5 @@
 package com.backend.sketchbrain.sketchbrainbackend.result.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import java.sql.Timestamp;
 

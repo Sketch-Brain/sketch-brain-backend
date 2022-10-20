@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping(path="/api/result")
+@RequestMapping(path="/api/server/result")
 public class ResultController {
     private final ResultService resultService;
 
@@ -24,7 +24,7 @@ public class ResultController {
     @GetMapping
     public Map<String, Object> resultAllLis(
     ){
-        log.info("[GET] /api/result : get all result list");
+        log.info("[GET] /api/server/result : get all result list");
         List<Result> list = resultService.getAllResultList();
         Map<String, Object> result = new ConcurrentHashMap<>();
         result.put("result", list);
@@ -36,7 +36,7 @@ public class ResultController {
     public Map<String,Object> insertResult(
             @RequestBody Result result
     ){
-        log.info("[PUT] /api/result : insert result");
+        log.info("[PUT] /api/server/result : insert result");
         resultService.insertResult(result);
         Map<String,Object> response = new ConcurrentHashMap<>();
         response.put("success", true);
@@ -48,7 +48,7 @@ public class ResultController {
     public Map<String,Object> resultListByUser(
             @PathVariable String user
     ){
-        log.info("[GET] /api/result/user/{} : get result list filtered by user, {}",user,user);
+        log.info("[GET] /api/server/result/user/{} : get result list filtered by user, {}",user,user);
         List<Result> list = resultService.getResultListByUser(user);
         if(list.isEmpty()){
             throw new ResultExceptions(ResultErrorCodeImpl.UKNOWN_USER_REFERED);
@@ -63,7 +63,7 @@ public class ResultController {
     public Map<String,Object> resultListById(
             @PathVariable String id
     ){
-        log.info("[GET] /api/id/{} : get result list filtered by id, {}",id,id);
+        log.info("[GET] /api/server/id/{} : get result list filtered by id, {}",id,id);
         List<Result> list = resultService.getResultListById(id);
         if(list.isEmpty()){
             throw new ResultExceptions(ResultErrorCodeImpl.UKNOWN_ID_REFERED);

@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum ResultErrorCodeImpl implements ErrorCode{
 
     UKNOWN_USER_REFERED(HttpStatus.NOT_FOUND,"INCORRECT USER NAME"),
-    UKNOWN_ID_REFERED(HttpStatus.NOT_FOUND,"INCORRECT ID");
+    UKNOWN_ID_REFERED(HttpStatus.NOT_FOUND,"INCORRECT ID"),
+    EMPTY_PARAMETER_EXIST(HttpStatus.BAD_REQUEST, "EMPTY PARAMETER EXIST");
     private final HttpStatus httpStatus;
     private final String message;
 }

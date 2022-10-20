@@ -14,20 +14,13 @@ import java.util.List;
 public class LayerDao {
     private final JdbcTemplate jdbcTemplate;
 
-    public List<String> layerList(){
+    public List<Layer> layerList(){
         String query = "SELECT layer_name FROM layer";
-        List<Layer> queryResult = jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Layer.class));
-        List<String> result = new ArrayList<>();
-        queryResult.stream().forEach(layer -> result.add(layer.getLayer_name()));
-        return result;
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Layer.class));
     }
 
-    public String layerParameter(String layer_name){
+    public List<Layer> layerParameter(String layer_name){
         String query = "SELECT parameter FROM layer WHERE layer_name='" + layer_name +"'";
-        List<Layer> queryResult = jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Layer.class));
-        if(queryResult.isEmpty())
-            return null;
-        else
-            return queryResult.get(0).getParameter();
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Layer.class));
     }
 }

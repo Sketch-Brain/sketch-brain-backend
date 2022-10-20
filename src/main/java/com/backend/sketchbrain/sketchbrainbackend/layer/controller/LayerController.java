@@ -1,5 +1,7 @@
 package com.backend.sketchbrain.sketchbrainbackend.layer.controller;
 
+import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.LayerErrorCodeImpl;
+import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.LayerExceptions;
 import com.backend.sketchbrain.sketchbrainbackend.layer.dto.Layer;
 import com.backend.sketchbrain.sketchbrainbackend.layer.service.LayerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,13 +42,11 @@ public class LayerController {
     ) throws JsonProcessingException {
         log.info("[GET] /api/server/layer/name/{} : get {} layer parameter",layer_name,layer_name);
         String layerParameter = layerService.getLayerParameter(layer_name);
-        if(layerParameter != null)
-            return objectMapper.readValue(layerParameter, new TypeReference<>() {});
-        else{
-            Map<String, Object> result = new ConcurrentHashMap<>();
-            result.put("success", false);
-            return result;
-        }
-    }
 
+        if(layerParameter == null)
+            throw new LayerExceptions(LayerErrorCodeImpl.UNKNOWN_LAYER_NAME_REFERED);
+        else
+            return objectMapper.readValue(layerParameter, new TypeReference<>() {});
+
+    }
 }

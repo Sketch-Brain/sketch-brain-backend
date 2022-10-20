@@ -1,17 +1,20 @@
 package com.backend.sketchbrain.sketchbrainbackend.result.controller;
 
 import com.backend.sketchbrain.sketchbrainbackend.global.error.ArgumentError;
-import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.CommonErrorCodeImpl;
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.ResultErrorCodeImpl;
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.ResultExceptions;
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
+import com.backend.sketchbrain.sketchbrainbackend.result.dto.ResultReturnExample;
 import com.backend.sketchbrain.sketchbrainbackend.result.service.ResultService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,7 +26,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ResultController {
     private final ResultService resultService;
 
-
+    @Operation(summary = "Get All Result List", description = "전체 Result 의 목록을 반환한다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",description = "Result 조회 성공",
+                    content = @Content(schema = @Schema(defaultValue = ResultReturnExample.returnAllResultListExample))
+            )
+    })
     @ResponseBody
     @GetMapping
     public Map<String, Object> resultAllLis(
@@ -35,6 +44,13 @@ public class ResultController {
         return result;
     }
 
+    @Operation(summary = "Insert Result", description = "결과를 저장한다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",description = "Result 저장 성공",
+                    content = @Content(schema = @Schema(defaultValue = ResultReturnExample.returnInsertResult))
+            )
+    })
     @ResponseBody
     @PutMapping
     public Map<String,Object> insertResult(
@@ -50,6 +66,14 @@ public class ResultController {
         return response;
     }
 
+
+    @Operation(summary = "Get Result List By User", description = "해당 유저의 Result 의 목록을 반환한다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",description = "Result 조회 성공",
+                    content = @Content(schema = @Schema(defaultValue = ResultReturnExample.returnResultListByUserExample))
+            )
+    })
     @ResponseBody
     @GetMapping("/user/{user}")
     public Map<String,Object> resultListByUser(
@@ -65,6 +89,13 @@ public class ResultController {
         return result;
     }
 
+    @Operation(summary = "Get Result List By Id", description = "해당 Id의 Result 의 목록을 반환한다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",description = "Result 조회 성공",
+                    content = @Content(schema = @Schema(defaultValue = ResultReturnExample.returnResultListByIdExample))
+            )
+    })
     @ResponseBody
     @GetMapping("/id/{id}")
     public Map<String,Object> resultListById(

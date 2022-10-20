@@ -2,17 +2,20 @@ package com.backend.sketchbrain.sketchbrainbackend.layer.controller;
 
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.LayerErrorCodeImpl;
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.LayerExceptions;
-import com.backend.sketchbrain.sketchbrainbackend.layer.dto.Layer;
+import com.backend.sketchbrain.sketchbrainbackend.layer.dto.LayerReturnExample;
 import com.backend.sketchbrain.sketchbrainbackend.layer.service.LayerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,6 +28,13 @@ public class LayerController {
     private final LayerService layerService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @Operation(summary = "Get All Layer List", description = "전체 Layer 의 이름 목록을 반환한다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",description = "Layer 조회 성공",
+                    content = @Content(schema = @Schema(defaultValue = LayerReturnExample.returnAllLayerListExample))
+            )
+    })
     @ResponseBody
     @GetMapping
     public Map<String, Object> allLayerList(){
@@ -35,6 +45,13 @@ public class LayerController {
         return result;
     }
 
+    @Operation(summary = "Get Layer Parameter", description = "Layer 의 Parameter 를 반환한다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",description = "Layer Parameter 조회 성공",
+                    content = @Content(schema = @Schema(defaultValue = LayerReturnExample.returnLayerParameterExample))
+            )
+    })
     @ResponseBody
     @GetMapping("/name/{layer_name}")
     public Map<String, Object> layerParameter(

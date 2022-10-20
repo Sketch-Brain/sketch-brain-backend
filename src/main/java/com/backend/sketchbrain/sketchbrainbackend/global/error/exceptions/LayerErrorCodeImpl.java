@@ -6,11 +6,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum ResultErrorCodeImpl implements ErrorCode{
+public enum LayerErrorCodeImpl implements ErrorCode{
 
-    UKNOWN_USER_REFERED(HttpStatus.NOT_FOUND,"INCORRECT USER NAME"),
-    UKNOWN_ID_REFERED(HttpStatus.NOT_FOUND,"INCORRECT ID"),
-    EMPTY_PARAMETER_EXIST(HttpStatus.BAD_REQUEST, "EMPTY PARAMETER EXIST");
+    UNKNOWN_LAYER_NAME_REFERED(HttpStatus.NOT_FOUND,"INCORRECT LAYER NAME");
     private final HttpStatus httpStatus;
     private final String message;
 }

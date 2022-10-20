@@ -1,13 +1,17 @@
 package com.backend.sketchbrain.sketchbrainbackend.result.controller;
 
+import com.backend.sketchbrain.sketchbrainbackend.global.error.ArgumentError;
+import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.CommonErrorCodeImpl;
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.ResultErrorCodeImpl;
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.ResultExceptions;
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
 import com.backend.sketchbrain.sketchbrainbackend.result.service.ResultService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +41,9 @@ public class ResultController {
             @RequestBody Result result
     ){
         log.info("[PUT] /api/server/result : insert result");
+        List<ArgumentError> emptyArgList = resultService.checkEmptyArgInResult(result);
+        if(!emptyArgList.isEmpty())
+            throw new ResultExceptions(ResultErrorCodeImpl.EMPTY_PARAMETER_EXIST,emptyArgList);
         resultService.insertResult(result);
         Map<String,Object> response = new ConcurrentHashMap<>();
         response.put("success", true);

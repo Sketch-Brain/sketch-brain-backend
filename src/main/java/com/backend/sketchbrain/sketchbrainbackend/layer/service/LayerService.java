@@ -6,6 +6,7 @@ import io.swagger.v3.core.util.Json;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,10 +15,17 @@ public class LayerService {
     private final LayerDao layerDao;
 
     public List<String> getLayerList(){
-        return layerDao.layerList();
+        List<Layer> queryResult = layerDao.layerList();
+        List<String> result = new ArrayList<>();
+        queryResult.stream().forEach(layer -> result.add(layer.getLayer_name()));
+        return result;
     }
 
     public String getLayerParameter(String layer_name){
-        return layerDao.layerParameter(layer_name);
+        List<Layer> queryResult = layerDao.layerParameter(layer_name);
+        if(queryResult.isEmpty())
+            return null;
+        else
+            return queryResult.get(0).getParameter();
     }
 }

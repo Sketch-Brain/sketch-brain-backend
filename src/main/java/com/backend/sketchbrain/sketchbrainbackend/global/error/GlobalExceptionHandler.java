@@ -1,6 +1,7 @@
 package com.backend.sketchbrain.sketchbrainbackend.global.error;
 
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.CommonErrorCodeImpl;
+import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.LayerExceptions;
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.ResultExceptions;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -56,7 +57,13 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ResultExceptions.class)
     protected ResponseEntity<ErrorResponse> handleResultParameterException(ResultExceptions e){
-        final ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(),e.getMessage());
+        final ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(),e.getMessage(),e.getErrors());
+        return new ResponseEntity<>(errorResponse, e.getErrorCode().getHttpStatus());
+    }
+
+    @ExceptionHandler(LayerExceptions.class)
+    protected ResponseEntity<ErrorResponse> handleLayerParameterException(LayerExceptions e){
+        final ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getMessage(),e.getErrors());
         return new ResponseEntity<>(errorResponse, e.getErrorCode().getHttpStatus());
     }
 

@@ -4,7 +4,6 @@ import com.backend.sketchbrain.sketchbrainbackend.global.error.ArgumentError;
 import com.backend.sketchbrain.sketchbrainbackend.result.dao.ResultDao;
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

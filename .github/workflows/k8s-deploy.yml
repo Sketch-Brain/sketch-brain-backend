@@ -2,7 +2,7 @@ name: Deploy in K8S
 
 on:
   workflow_run:
-    workflows: ["Run Test"]
+    workflows: [Run Test]
     types:
       - completed
 

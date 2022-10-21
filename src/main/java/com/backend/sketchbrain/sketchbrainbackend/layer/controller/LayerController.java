@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(path="/api/server/layer")
 public class LayerController {
@@ -50,6 +50,9 @@ public class LayerController {
             @ApiResponse(
                     responseCode = "200",description = "Layer Parameter 조회 성공",
                     content = @Content(schema = @Schema(defaultValue = LayerReturnExample.returnLayerParameterExample))
+            ),
+            @ApiResponse(
+                    responseCode = "400", description = "Layer Parameter 조회 실패"
             )
     })
     @ResponseBody
@@ -62,8 +65,6 @@ public class LayerController {
 
         if(layerParameter == null)
             throw new LayerExceptions(LayerErrorCodeImpl.UNKNOWN_LAYER_NAME_REFERED);
-        else
-            return objectMapper.readValue(layerParameter, new TypeReference<>() {});
-
+        return objectMapper.readValue(layerParameter, new TypeReference<>() {});
     }
 }

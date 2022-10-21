@@ -1,8 +1,10 @@
 name: Deploy in K8S
 
 on:
-  pull_request:
-    branches: [main, develop]
+  workflow_run:
+    workflows: ["Run Test"]
+    types:
+      - completed
 
 jobs:
   build:

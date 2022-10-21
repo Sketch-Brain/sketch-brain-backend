@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -20,7 +19,7 @@ public class LayerDao {
     }
 
     public List<Layer> layerParameter(String layer_name){
-        String query = "SELECT parameter FROM layer WHERE layer_name='" + layer_name +"'";
-        return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Layer.class));
+        String query = "SELECT parameter FROM layer WHERE layer_name = ?";
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Layer.class),layer_name);
     }
 }

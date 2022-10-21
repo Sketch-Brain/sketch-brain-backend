@@ -20,13 +20,13 @@ public class ResultDao {
     }
 
     public List<Result> listByUser(String user){
-        String query = "SELECT * FROM result WHERE user='" + user + "' ORDER BY id DESC";
-        return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Result.class));
+        String query = "SELECT * FROM result WHERE user= ? ORDER BY id DESC";
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Result.class), user);
     }
 
     public List<Result> listById(String id){
-        String query = "SELECT * FROM result WHERE id='" + id + "'";
-        return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Result.class));
+        String query = "SELECT * FROM result WHERE id= ?";
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Result.class),id);
     }
 
     public int insertResult(Result result){

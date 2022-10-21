@@ -20,7 +20,7 @@ spec:
             ports:
             - name: backend-port
               containerPort: 8080
-            imagePullPolicy: IfNotPresent
+            imagePullPolicy: Always
             volumeMounts:
             - name: tz-seoul
               mountPath: /etc/localtime

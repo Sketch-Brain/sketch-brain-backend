@@ -29,7 +29,7 @@ jobs:
      runs-on: ubuntu-latest
      env:
         DOCKER_IMAGE_NAME: sketchbrain-backend
-        DOCKER_TAG: 0.${{ github.run_number }}
+        DOCKER_TAG: 1.0.${{ github.run_number }}
         CONFIG_FILE: src/main/resources/application.properties
      steps:
      - name: Checkout
@@ -60,7 +60,7 @@ jobs:
      runs-on: ubuntu-latest
      env:
        DOCKER_IMAGE_NAME: sketchbrain-backend
-       DOCKER_TAG: 0.${{ github.run_number }}
+       DOCKER_TAG: 1.0.${{ github.run_number }}
        DEPLOY_YAML: yamls/sketchbrain-backend-deploy-template.yaml
      steps:
      - name: Checkout

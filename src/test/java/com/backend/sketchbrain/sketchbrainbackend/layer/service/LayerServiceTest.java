@@ -3,6 +3,7 @@ package com.backend.sketchbrain.sketchbrainbackend.layer.service;
 import com.backend.sketchbrain.sketchbrainbackend.layer.dao.LayerDao;
 import com.backend.sketchbrain.sketchbrainbackend.layer.dto.Layer;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +42,13 @@ class LayerServiceTest {
     }
 
     @Test
+    @DisplayName("전체 Layer Name List 를 반환하는 Service 로직이 정상 작동한다.")
     void getLayerList() {
         given(layerDao.layerList()).willReturn(testLayerList);
         assertEquals(layerService.getLayerList().size(),3);
     }
     @Test
+    @DisplayName("Layer 이름을 통한 Layer Parameter 를 반환하는 Service 로직이 정상 작동한다.")
     void getLayerParameter() {
         List<Layer> layerListReturnTmp = new ArrayList<>();
         String layerName = "activation";
@@ -56,6 +59,7 @@ class LayerServiceTest {
     }
 
     @Test
+    @DisplayName("Layer 이름이 DB에 없으면, null 이 반환된다.")
     void getLayerParameterIncorrectLayerName(){
         String layerName = "@incorrect! layer^ &name*";
         given(layerDao.layerParameter(layerName)).willReturn(new ArrayList<>(0));

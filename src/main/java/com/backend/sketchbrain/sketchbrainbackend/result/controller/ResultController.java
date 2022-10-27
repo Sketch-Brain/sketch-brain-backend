@@ -57,9 +57,9 @@ public class ResultController {
             @RequestBody Result result
     ){
         log.info("[PUT] /api/server/result : insert result");
-        List<ArgumentError> emptyArgList = resultService.checkEmptyArgInResult(result);
-        if(!emptyArgList.isEmpty())
-            throw new ResultExceptions(ResultErrorCodeImpl.EMPTY_PARAMETER_EXIST,emptyArgList);
+        List<ArgumentError> incorrectArgInResult = resultService.checkIncorrectArgInResult(result);
+        if(!incorrectArgInResult.isEmpty())
+            throw new ResultExceptions(ResultErrorCodeImpl.INCORRECT_PARAMETER_EXIST,incorrectArgInResult);
         resultService.insertResult(result);
         Map<String,Object> response = new ConcurrentHashMap<>();
         response.put("success", true);

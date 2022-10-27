@@ -30,7 +30,7 @@ public class ResultService {
         return resultDao.insertResult(result);
     }
 
-    public List<ArgumentError> checkEmptyArgInResult(Result result){
+    public List<ArgumentError> checkIncorrectArgInResult(Result result){
         List<ArgumentError> argumentErrorList = new ArrayList<>();
         if(result.getId() != null){
             argumentErrorList.add(new ArgumentError("result",result.getId().toString(),"DON'T NEED TO INSERT ID"));

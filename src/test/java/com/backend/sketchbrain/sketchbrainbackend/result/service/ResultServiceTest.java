@@ -1,6 +1,5 @@
 package com.backend.sketchbrain.sketchbrainbackend.result.service;
 
-import com.backend.sketchbrain.sketchbrainbackend.global.error.ArgumentError;
 import com.backend.sketchbrain.sketchbrainbackend.result.dao.ResultDao;
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,14 +87,14 @@ class ResultServiceTest {
     }
 
     @Test
-    @DisplayName("정상적이지 않은 Result 는 추가되지 않고, 에러를 반환한다.")
-    void checkEmptyArgInResult() {
+    @DisplayName("정상적이지 않은 Result 에 대한 검사 및 에러 반환이 정상 작동한다.")
+    void checkIncorrectArgInResult() {
         Result testInsertIncorrectResult = new Result();
 
         testInsertIncorrectResult.setId(1);
         testInsertIncorrectResult.setUser("freddie");
         testInsertIncorrectResult.setResult("23");
 
-        assertEquals(resultService.checkEmptyArgInResult(testInsertIncorrectResult).size(),3);
+        assertEquals(resultService.checkIncorrectArgInResult(testInsertIncorrectResult).size(),3);
     }
 }

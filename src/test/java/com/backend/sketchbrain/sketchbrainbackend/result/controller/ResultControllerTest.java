@@ -1,9 +1,9 @@
 package com.backend.sketchbrain.sketchbrainbackend.result.controller;
 
+import com.backend.sketchbrain.sketchbrainbackend.global.error.ArgumentError;
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.ResultErrorCodeImpl;
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
 import com.backend.sketchbrain.sketchbrainbackend.result.service.ResultService;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,16 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -61,24 +58,35 @@ class ResultControllerTest {
     @DisplayName("Result 를 추가하는 Controller 로직이 정상 작동한다.")
     void insertResult() throws Exception {
         Result insertResult = new Result("user","data.csv","model.py","23");
-        mvc.perform(put("/api/server/result"))
+        given(resultService.insertResult(insertResult)).willReturn(1);
+        given(resultService.checkIncorrectArgInResult(insertResult)).willReturn(new ArrayList<>());
+        String content = objectMapper.writeValueAsString(insertResult);
+
+        mvc.perform(put("/api/server/result")
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("success").value(true))
-                .andReturn();
+                .andExpect(jsonPath("success").value(true));
     }
 
     @Test
     @DisplayName("정상적이지 않은 Result 는 추가되지 않고, 에러를 반환한다")
     void insertIncorrectResult() throws Exception{
-        Result insertIncorrectResult = new Result();
-        insertIncorrectResult.setId(1);
-        insertIncorrectResult.setUser("incorrect user");
+        Result incorrectResult = new Result(1,"user","data.csv","model.py","23",null);
 
-        mvc.perform(put("/api/server/result"))
+        List<ArgumentError> argumentErrorList = List.of(new ArgumentError[]{
+                new ArgumentError("result","1","DON'T NEED TO INSERT ID")
+        });
+
+        given(resultService.checkIncorrectArgInResult(incorrectResult)).willReturn(argumentErrorList);
+        String content = objectMapper.writeValueAsString(incorrectResult);
+        mvc.perform(put("/api/server/result")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("message").value(ResultErrorCodeImpl.EMPTY_PARAMETER_EXIST.getMessage()))
-                .andExpect(jsonPath("error").isNotEmpty())
-                .andReturn();
+                .andExpect(jsonPath("message").value(ResultErrorCodeImpl.INCORRECT_PARAMETER_EXIST.getMessage()));
     }
 
     @Test

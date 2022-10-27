@@ -46,14 +46,13 @@ class LayerControllerTest {
         result.put("layer_list",getLayerListReturn);
         given(layerService.getLayerList()).willReturn(getLayerListReturn);
 
-        MvcResult response = mvc.perform(get("/api/server/layer"))
+        mvc.perform(get("/api/server/layer"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("layer_list").isNotEmpty())
+                .andExpect(jsonPath("layer_list[0]").value("activation"))
+                .andExpect(jsonPath("layer_list[1]").value("conv2d"))
+                .andExpect(jsonPath("layer_list[2]").value("flatten"))
                 .andReturn();
-
-        assertEquals(
-            objectMapper.readValue(response.getResponse().getContentAsString(), new TypeReference<>() {}),
-            result
-                );
     }
 
     @Test
@@ -63,14 +62,12 @@ class LayerControllerTest {
         String getLayerParameterReturn = "{\"activation\": {\"type\": \"string\", \"visible\": true, \"default_value\": \"relu\"}}";
         given(layerService.getLayerParameter(layerName)).willReturn(getLayerParameterReturn);
 
-        MvcResult response = mvc.perform(get("/api/server/layer/name/" + layerName ))
+        mvc.perform(get("/api/server/layer/name/" + layerName ))
                 .andExpect(status().isOk())
-                .andReturn();
-        Object responseJson = objectMapper.readValue(response.getResponse().getContentAsString(), new TypeReference<>() {});
-        assertEquals(
-                responseJson,
-                objectMapper.readValue(getLayerParameterReturn, new TypeReference<>() {})
-        );
+                .andExpect(jsonPath(layerName).isNotEmpty())
+                .andExpect(jsonPath("activation.type").value("string"))
+                .andExpect(jsonPath("activation.visible").value("true"))
+                .andExpect(jsonPath("activation.default_value").value("relu"));
     }
 
     @Test

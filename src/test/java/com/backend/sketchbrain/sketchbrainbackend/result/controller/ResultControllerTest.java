@@ -40,9 +40,9 @@ class ResultControllerTest {
     @DisplayName("전체 Result List 를 반환하는 Controller 로직이 정상 작동한다.")
     void resultAllLis() throws Exception {
         List<Result> allResultList = List.of(new Result[]{
-                new Result(1,"user1","data.csv","model.py","21",null),
-                new Result(2,"user2","data.csv","model.py","21",null),
-                new Result(3,"user3","data.csv","model.py","21",null)
+                new Result(1,"user1","data.csv","model.py","11",null),
+                new Result(2,"user2","data.csv1","model.py","21",null),
+                new Result(3,"user3","data.csv2","model.py","21",null)
         });
 
         given(resultService.getAllResultList()).willReturn(allResultList);
@@ -50,7 +50,9 @@ class ResultControllerTest {
         mvc.perform(get("/api/server/result"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("result").isNotEmpty())
-                .andExpect(jsonPath("result[2].id").value(3))
+                .andExpect(jsonPath("result[0].result").value("11"))
+                .andExpect(jsonPath("result[1].id").value(2))
+                .andExpect(jsonPath("result[2].data_name").value("data.csv2"))
                 .andReturn();
     }
 
@@ -86,7 +88,11 @@ class ResultControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("message").value(ResultErrorCodeImpl.INCORRECT_PARAMETER_EXIST.getMessage()));
+                .andExpect(jsonPath("message").value(ResultErrorCodeImpl.INCORRECT_PARAMETER_EXIST.getMessage()))
+                .andExpect(jsonPath("errors").isNotEmpty())
+                .andExpect(jsonPath("errors[0].fieldName").value("result"))
+                .andExpect(jsonPath("errors[0].value").value("1"))
+                .andExpect(jsonPath("errors[0].reason").value("DON'T NEED TO INSERT ID"));
     }
 
     @Test
@@ -100,7 +106,10 @@ class ResultControllerTest {
 
         mvc.perform(get("/api/server/result/user/{user}","user1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("result").isNotEmpty());
+                .andExpect(jsonPath("result").isNotEmpty())
+                .andExpect(jsonPath("result[0].data_name").value("data1.csv"))
+                .andExpect(jsonPath("result[1].model_name").value("model2.csv"))
+                .andExpect(jsonPath("result[1].result").value("22"));
     }
 
     @Test
@@ -124,7 +133,10 @@ class ResultControllerTest {
 
         mvc.perform(get("/api/server/result/id/{id}","1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("result").isNotEmpty());
+                .andExpect(jsonPath("result").isNotEmpty())
+                .andExpect(jsonPath("result[0].user").value("user1"))
+                .andExpect(jsonPath("result[0].data_name").value("data1.csv"))
+                .andExpect(jsonPath("result[0].result").value("21"));
     }
 
     @Test

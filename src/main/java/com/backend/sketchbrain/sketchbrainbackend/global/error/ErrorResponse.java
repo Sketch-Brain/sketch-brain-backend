@@ -1,6 +1,7 @@
 package com.backend.sketchbrain.sketchbrainbackend.global.error;
 
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.CommonErrorCodeImpl;
+import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.LayerErrorCodeImpl;
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.ResultErrorCodeImpl;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,12 +35,25 @@ public class ErrorResponse {
         this.errors = new ArrayList<>();
     }
 
-    public ErrorResponse(ResultErrorCodeImpl trainingErrorCode, String message, List<ArgumentError> argumentErrors) {
-        this.code = trainingErrorCode.getHttpStatus();
+    public ErrorResponse(ResultErrorCodeImpl resultErrorCode, String message, List<ArgumentError> argumentErrors) {
+        this.code = resultErrorCode.getHttpStatus();
         this.message = message;
         this.errors = argumentErrors;
     }
 
+    public ErrorResponse(LayerErrorCodeImpl layerErrorCode, String message) {
+        final String value = layerErrorCode.getMessage();
+        this.code = layerErrorCode.getHttpStatus();
+        this.message = message;
+        this.errors = new ArrayList<>();
+    }
+
+    public ErrorResponse(LayerErrorCodeImpl layerErrorCode, String message, List<ArgumentError> argumentErrors) {
+        final String value = layerErrorCode.getMessage();
+        this.code = layerErrorCode.getHttpStatus();
+        this.message = message;
+        this.errors = argumentErrors;
+    }
 
     public static ErrorResponse create(MethodArgumentTypeMismatchException e){
         final String value = e.getValue() == null ? "" : e.getValue().toString();

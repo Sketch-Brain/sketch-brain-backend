@@ -1,6 +1,7 @@
 package com.backend.sketchbrain.sketchbrainbackend.result.dao;
 
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
+import com.backend.sketchbrain.sketchbrainbackend.result.vo.InsertResultVo;
 import com.backend.sketchbrain.sketchbrainbackend.result.vo.UpdateResultVo;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,7 +79,7 @@ class ResultDaoTest {
     @Transactional
     @DisplayName("DB 에서 Result 에 대한 추가가 정상 작동한다.")
     void insertResult() {
-        Result testData = new Result("ED306A15-93BE-458D-AC59-9CDAB636A4EC","testUser","data.csv","model.py","12.0");
+        InsertResultVo testData = new InsertResultVo("ED306A15-93BE-458D-AC59-9CDAB636A4EC","testUser","data.csv","model.py","12.0");
         assertEquals(resultDao.insertResult(testData),1);
     }
 
@@ -86,7 +87,7 @@ class ResultDaoTest {
     @Transactional
     @DisplayName("정상적이지 않은 Result 는 추가되지 않는다.")
     void insertReulstIncorrectData(){
-        Result testIncorrectData = new Result();
+        InsertResultVo testIncorrectData = new InsertResultVo();
         testIncorrectData.setUser("freddie");
         testIncorrectData.setData_name("tmp.csv");
         assertThrows(
@@ -100,7 +101,7 @@ class ResultDaoTest {
     @Transactional
     @DisplayName("DB 에서 Uuid 를 통한 Result 에 대한 갱신이 정상 작동한다.")
     void updateResult(){
-        Result testData = new Result("c72843e9-98dc-4539-9b05-ab0005c736f3","testUser","data.csv","model.py","12.0");
+        InsertResultVo testData = new InsertResultVo("c72843e9-98dc-4539-9b05-ab0005c736f3","testUser","data.csv","model.py","12.0");
         UpdateResultVo updateResultVo = new UpdateResultVo("c72843e9-98dc-4539-9b05-ab0005c736f3","98.2");
         resultDao.insertResult(testData);
         assertEquals(resultDao.updateResult(updateResultVo),1);

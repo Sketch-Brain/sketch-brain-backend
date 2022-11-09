@@ -1,6 +1,7 @@
 package com.backend.sketchbrain.sketchbrainbackend.result.dao;
 
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
+import com.backend.sketchbrain.sketchbrainbackend.result.vo.InsertResultVo;
 import com.backend.sketchbrain.sketchbrainbackend.result.vo.UpdateResultVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -34,10 +35,10 @@ public class ResultDao {
         String query = "SELECT * FROM result WHERE uuid= ?";
         return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Result.class),uuid);
     }
-    public int insertResult(Result result){
+    public int insertResult(InsertResultVo insertResultVo){
         String query = "INSERT INTO result(uuid,user,data_name,model_name,result) VALUES(?,?,?,?,?)";
         return jdbcTemplate.update(query,
-                new Object[]{result.getUuid(),result.getUser(), result.getData_name(), result.getModel_name(), result.getResult()});
+                new Object[]{insertResultVo.getUuid(),insertResultVo.getUser(), insertResultVo.getData_name(), insertResultVo.getModel_name(), insertResultVo.getResult()});
     }
 
     public int updateResult(UpdateResultVo updateResultVo){

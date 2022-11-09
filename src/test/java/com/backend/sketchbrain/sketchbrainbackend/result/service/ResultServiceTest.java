@@ -2,6 +2,7 @@ package com.backend.sketchbrain.sketchbrainbackend.result.service;
 
 import com.backend.sketchbrain.sketchbrainbackend.result.dao.ResultDao;
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
+import com.backend.sketchbrain.sketchbrainbackend.result.vo.InsertResultVo;
 import com.backend.sketchbrain.sketchbrainbackend.result.vo.UpdateResultVo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -82,7 +83,7 @@ class ResultServiceTest {
     @Test
     @DisplayName("Result 를 추가하는 Service 로직이 정상 작동한다.")
     void insertResult() {
-        Result testInsertResult = new Result("181CB408-A561-4AC2-ACFA-B937119CA3E2","freddie","data1.csv","model1.py","23");
+        InsertResultVo testInsertResult = new InsertResultVo("181CB408-A561-4AC2-ACFA-B937119CA3E2","freddie","data1.csv","model1.py","23");
         given(resultDao.insertResult(testInsertResult)).willReturn(1);
         assertEquals(resultService.insertResult(testInsertResult),1);
     }
@@ -90,13 +91,13 @@ class ResultServiceTest {
     @Test
     @DisplayName("정상적이지 않은 Result 에 대한 검사 및 에러 반환이 정상 작동한다.")
     void checkIncorrectArgInResult() {
-        Result testInsertIncorrectResult = new Result();
+        InsertResultVo testInsertIncorrectResult = new InsertResultVo();
 
-        testInsertIncorrectResult.setId(1);
+
         testInsertIncorrectResult.setUser("freddie");
         testInsertIncorrectResult.setResult("23");
 
-        assertEquals(resultService.checkIncorrectArgInResult(testInsertIncorrectResult).size(),4);
+        assertEquals(resultService.checkIncorrectArgInResult(testInsertIncorrectResult).size(),3);
     }
 
     @Test

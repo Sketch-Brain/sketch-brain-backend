@@ -77,7 +77,7 @@ public class ResultController {
             )
     })
     @ResponseBody
-    @PostMapping
+    @PatchMapping
     public Map<String,Object> updateResult(
             @RequestBody UpdateResultVo updateResultVo
     ){

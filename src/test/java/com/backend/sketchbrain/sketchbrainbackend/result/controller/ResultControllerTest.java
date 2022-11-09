@@ -161,7 +161,7 @@ class ResultControllerTest {
         given(resultService.checkIncorrectUpdateResultVo(updateResultVo)).willReturn(new ArrayList<>());
         String content = objectMapper.writeValueAsString(updateResultVo);
 
-        mvc.perform(post("/api/server/result")
+        mvc.perform(patch("/api/server/result")
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -181,7 +181,7 @@ class ResultControllerTest {
         given(resultService.checkIncorrectUpdateResultVo(updateResultVo)).willReturn(argumentErrorList);
         String content = objectMapper.writeValueAsString(updateResultVo);
 
-        mvc.perform(post("/api/server/result")
+        mvc.perform(patch("/api/server/result")
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

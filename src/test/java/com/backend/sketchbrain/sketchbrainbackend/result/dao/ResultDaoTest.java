@@ -114,4 +114,22 @@ class ResultDaoTest {
         UpdateResultVo updateResultVo = new UpdateResultVo("inva!lid@ u%uid^","91.2");
         assertEquals(resultDao.updateResult(updateResultVo),0);
     }
+
+    @Test
+    @Transactional
+    @DisplayName("DB 에서 uuid 를 통한 삭제가 정상적으로 작동한다.")
+    void deleteReulst(){
+        String uuid = "c72843e9-98dc-4539-9b05-ab0005c736f3";
+        InsertResultVo testData = new InsertResultVo(uuid,"testUser","data.csv","model.py","12.0");
+        resultDao.insertResult(testData);
+        assertEquals(resultDao.deleteResult(uuid),1);
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("정상적이지 않은 Uuid 를 통한 Result 에 대한 삭제가 이뤄지지 않는다.")
+    void deleteInvalidUuidResult(){
+        String invalidUuid = "inva!lid@ u%uid^";
+        assertEquals(resultDao.deleteResult(invalidUuid),0);
+    }
 }

@@ -4,6 +4,7 @@ import com.backend.sketchbrain.sketchbrainbackend.global.error.ArgumentError;
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.ResultErrorCodeImpl;
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
 import com.backend.sketchbrain.sketchbrainbackend.result.service.ResultService;
+import com.backend.sketchbrain.sketchbrainbackend.result.vo.InsertResultVo;
 import com.backend.sketchbrain.sketchbrainbackend.result.vo.UpdateResultVo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -59,7 +60,7 @@ class ResultControllerTest {
     @Test
     @DisplayName("Result 를 추가하는 Controller 로직이 정상 작동한다.")
     void insertResult() throws Exception {
-        Result insertResult = new Result("13F84F0D-9C7B-4507-B352-2F2A724444C6","user","data.csv","model.py","23");
+        InsertResultVo insertResult = new InsertResultVo("13F84F0D-9C7B-4507-B352-2F2A724444C6","user","data.csv","model.py","23");
         given(resultService.insertResult(insertResult)).willReturn(1);
         given(resultService.checkIncorrectArgInResult(insertResult)).willReturn(new ArrayList<>());
         String content = objectMapper.writeValueAsString(insertResult);
@@ -75,10 +76,10 @@ class ResultControllerTest {
     @Test
     @DisplayName("정상적이지 않은 Result 는 추가되지 않고, 에러를 반환한다")
     void insertIncorrectResult() throws Exception{
-        Result incorrectResult = new Result(1,"13F84F0D-9C7B-4507-B352-2F2A724444C6","user","data.csv","model.py","23",null);
+        InsertResultVo incorrectResult = new InsertResultVo("13F84F0D-9C7B-4507-B352-2F2A724444C6","user","data.csv","model.py",null);
 
         List<ArgumentError> argumentErrorList = List.of(new ArgumentError[]{
-                new ArgumentError("result","1","DON'T NEED TO INSERT ID")
+                new ArgumentError("result",null,"NEED TO INSERT RESULT")
         });
 
         given(resultService.checkIncorrectArgInResult(incorrectResult)).willReturn(argumentErrorList);
@@ -91,8 +92,7 @@ class ResultControllerTest {
                 .andExpect(jsonPath("message").value(ResultErrorCodeImpl.INCORRECT_PARAMETER_EXIST.getMessage()))
                 .andExpect(jsonPath("errors").isNotEmpty())
                 .andExpect(jsonPath("errors[0].fieldName").value("result"))
-                .andExpect(jsonPath("errors[0].value").value("1"))
-                .andExpect(jsonPath("errors[0].reason").value("DON'T NEED TO INSERT ID"));
+                .andExpect(jsonPath("errors[0].reason").value("NEED TO INSERT RESULT"));
     }
 
     @Test

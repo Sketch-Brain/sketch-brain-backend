@@ -6,6 +6,7 @@ import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.Result
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.ResultReturnExample;
 import com.backend.sketchbrain.sketchbrainbackend.result.service.ResultService;
+import com.backend.sketchbrain.sketchbrainbackend.result.vo.InsertResultVo;
 import com.backend.sketchbrain.sketchbrainbackend.result.vo.UpdateResultVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -55,13 +56,13 @@ public class ResultController {
     @ResponseBody
     @PutMapping
     public Map<String,Object> insertResult(
-            @RequestBody Result result
-    ){
+            @RequestBody InsertResultVo insertResultVo
+            ){
         log.info("[PUT] /api/server/result : insert result");
-        List<ArgumentError> incorrectArgInResult = resultService.checkIncorrectArgInResult(result);
+        List<ArgumentError> incorrectArgInResult = resultService.checkIncorrectArgInResult(insertResultVo);
         if(!incorrectArgInResult.isEmpty())
             throw new ResultExceptions(ResultErrorCodeImpl.INCORRECT_PARAMETER_EXIST,incorrectArgInResult);
-        resultService.insertResult(result);
+        resultService.insertResult(insertResultVo);
         Map<String,Object> response = new ConcurrentHashMap<>();
         response.put("success", true);
         return response;

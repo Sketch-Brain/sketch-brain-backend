@@ -11,6 +11,8 @@ import java.sql.Timestamp;
 public class Result {
     private Integer id;
     @NonNull
+    private String uuid;
+    @NonNull
     private String user;
     @NonNull
     private String data_name;

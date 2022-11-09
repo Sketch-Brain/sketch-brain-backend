@@ -4,6 +4,7 @@ import com.backend.sketchbrain.sketchbrainbackend.global.error.ArgumentError;
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.ResultErrorCodeImpl;
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
 import com.backend.sketchbrain.sketchbrainbackend.result.service.ResultService;
+import com.backend.sketchbrain.sketchbrainbackend.result.vo.UpdateResultVo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,8 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,9 +40,9 @@ class ResultControllerTest {
     @DisplayName("전체 Result List 를 반환하는 Controller 로직이 정상 작동한다.")
     void resultAllLis() throws Exception {
         List<Result> allResultList = List.of(new Result[]{
-                new Result(1,"user1","data.csv","model.py","11",null),
-                new Result(2,"user2","data.csv1","model.py","21",null),
-                new Result(3,"user3","data.csv2","model.py","21",null)
+                new Result(1,"ED306A15-93BE-458D-AC59-9CDAB636A4EC","user1","data.csv","model.py","11",null),
+                new Result(2,"181CB408-A561-4AC2-ACFA-B937119CA3E2","user2","data.csv1","model.py","21",null),
+                new Result(3,"13F84F0D-9C7B-4507-B352-2F2A724444C6","user3","data.csv2","model.py","21",null)
         });
 
         given(resultService.getAllResultList()).willReturn(allResultList);
@@ -59,7 +59,7 @@ class ResultControllerTest {
     @Test
     @DisplayName("Result 를 추가하는 Controller 로직이 정상 작동한다.")
     void insertResult() throws Exception {
-        Result insertResult = new Result("user","data.csv","model.py","23");
+        Result insertResult = new Result("13F84F0D-9C7B-4507-B352-2F2A724444C6","user","data.csv","model.py","23");
         given(resultService.insertResult(insertResult)).willReturn(1);
         given(resultService.checkIncorrectArgInResult(insertResult)).willReturn(new ArrayList<>());
         String content = objectMapper.writeValueAsString(insertResult);
@@ -75,7 +75,7 @@ class ResultControllerTest {
     @Test
     @DisplayName("정상적이지 않은 Result 는 추가되지 않고, 에러를 반환한다")
     void insertIncorrectResult() throws Exception{
-        Result incorrectResult = new Result(1,"user","data.csv","model.py","23",null);
+        Result incorrectResult = new Result(1,"13F84F0D-9C7B-4507-B352-2F2A724444C6","user","data.csv","model.py","23",null);
 
         List<ArgumentError> argumentErrorList = List.of(new ArgumentError[]{
                 new ArgumentError("result","1","DON'T NEED TO INSERT ID")
@@ -99,8 +99,8 @@ class ResultControllerTest {
     @DisplayName("User 이름을 통한 Result List 를 반환하는 Controller 로직이 정상 작동한다.")
     void resultListByUser() throws Exception {
         List<Result> testResultListByUser =  List.of(new Result[]{
-                new Result("user1","data1.csv","model1.csv","21"),
-                new Result("user1","data2.csv","model2.csv","22")
+                new Result("13F84F0D-9C7B-4507-B352-2F2A724444C6","user1","data1.csv","model1.csv","21"),
+                new Result("181CB408-A561-4AC2-ACFA-B937119CA3E2","user1","data2.csv","model2.csv","22")
         });
         given(resultService.getResultListByUser("user1")).willReturn(testResultListByUser);
 
@@ -127,7 +127,7 @@ class ResultControllerTest {
     @DisplayName("id 를 통한 Result List 를 반환하는 Controller 로직이 정상 작동한다.")
     void resultListById() throws Exception {
         List<Result> testResultListById =  List.of(new Result[]{
-                new Result(1,"user1","data1.csv","model1.csv","21",null)
+                new Result(1,"181CB408-A561-4AC2-ACFA-B937119CA3E2","user1","data1.csv","model1.csv","21",null)
         });
         given(resultService.getResultListById("1")).willReturn(testResultListById);
 
@@ -149,5 +149,45 @@ class ResultControllerTest {
         mvc.perform(get("/api/server/result/id/{id}",id))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("message").value(ResultErrorCodeImpl.UKNOWN_ID_REFERED.getMessage()));
+    }
+
+    @Test
+    @DisplayName("Uuid 를 통한 Result 갱신에 대한 Controller 로직이 정상 작동한다.")
+    void updateResult() throws Exception{
+        UpdateResultVo updateResultVo = new UpdateResultVo("6b2089c5-9f6a-4f51-904e-de10e3c455a1","93.1");
+        given(resultService.updateResult(updateResultVo)).willReturn(1);
+        given(resultService.checkIncorrectUpdateResultVo(updateResultVo)).willReturn(new ArrayList<>());
+        String content = objectMapper.writeValueAsString(updateResultVo);
+
+        mvc.perform(post("/api/server/result")
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("success").value(true));
+    }
+
+    @Test
+    @DisplayName("정상적이지 않은 Result 는 갱신되지 않고, 에러를 반환한다")
+    void updateInvalidResult() throws Exception{
+        UpdateResultVo updateResultVo = new UpdateResultVo();
+        updateResultVo.setUuid("6b2089c5-9f6a-4f51-904e-de10e3c455a1");
+        List<ArgumentError> argumentErrorList = List.of(new ArgumentError[]{
+                new ArgumentError("uuid",null,"NEED TO INSERT UUID")
+        });
+
+        given(resultService.checkIncorrectUpdateResultVo(updateResultVo)).willReturn(argumentErrorList);
+        String content = objectMapper.writeValueAsString(updateResultVo);
+
+        mvc.perform(post("/api/server/result")
+                        .content(content)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("message").value(ResultErrorCodeImpl.INCORRECT_PARAMETER_EXIST.getMessage()))
+                .andExpect(jsonPath("errors").isNotEmpty())
+                .andExpect(jsonPath("errors[0].fieldName").value("uuid"))
+                .andExpect(jsonPath("errors[0].reason").value("NEED TO INSERT UUID"));
+
     }
 }

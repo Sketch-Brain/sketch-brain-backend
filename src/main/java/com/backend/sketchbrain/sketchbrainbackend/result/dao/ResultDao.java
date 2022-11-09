@@ -45,4 +45,9 @@ public class ResultDao {
         String query = "UPDATE result SET result=? WHERE uuid=?";
         return jdbcTemplate.update(query,updateResultVo.getResult(),updateResultVo.getUuid());
     }
+
+    public int deleteResult(String uuid){
+        String query = "DELETE FROM result WHERE uuid=?";
+        return jdbcTemplate.update(query,uuid);
+    }
 }

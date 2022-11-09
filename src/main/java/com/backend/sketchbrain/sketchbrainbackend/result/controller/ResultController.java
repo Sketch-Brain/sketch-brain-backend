@@ -6,6 +6,7 @@ import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.Result
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.ResultReturnExample;
 import com.backend.sketchbrain.sketchbrainbackend.result.service.ResultService;
+import com.backend.sketchbrain.sketchbrainbackend.result.vo.DeleteResultVo;
 import com.backend.sketchbrain.sketchbrainbackend.result.vo.InsertResultVo;
 import com.backend.sketchbrain.sketchbrainbackend.result.vo.UpdateResultVo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -94,6 +95,28 @@ public class ResultController {
         return response;
     }
 
+    @Operation(summary = "Delete Result", description = "결과를 삭제한다.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",description = "Result 삭제 성공",
+                    content = @Content(schema = @Schema(defaultValue = ResultReturnExample.returnInsertResult))
+            )
+    })
+    @ResponseBody
+    @DeleteMapping
+    public Map<String,Object> deleteByUuid(
+            @RequestBody DeleteResultVo deleteResultVo
+    ){
+        log.info("[DELETE] /api/server/result : delete result by uuid");
+        int updateCount = resultService.deleteResult(deleteResultVo.getUuid());
+        Map<String,Object> response = new ConcurrentHashMap<>();
+        if(updateCount == 0){
+            throw new ResultExceptions(ResultErrorCodeImpl.UKNOWN_UUID_REFERED);
+        }
+        response.put("success", true);
+        return response;
+    }
+
     @Operation(summary = "Get Result List By User", description = "해당 유저의 Result 의 목록을 반환한다.")
     @ApiResponses(value = {
             @ApiResponse(
@@ -159,5 +182,6 @@ public class ResultController {
         result.put("result",list);
         return result;
     }
+
 
 }

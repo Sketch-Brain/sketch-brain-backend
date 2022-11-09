@@ -4,8 +4,10 @@ import com.backend.sketchbrain.sketchbrainbackend.global.error.ArgumentError;
 import com.backend.sketchbrain.sketchbrainbackend.global.error.exceptions.ResultErrorCodeImpl;
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
 import com.backend.sketchbrain.sketchbrainbackend.result.service.ResultService;
+import com.backend.sketchbrain.sketchbrainbackend.result.vo.DeleteResultVo;
 import com.backend.sketchbrain.sketchbrainbackend.result.vo.InsertResultVo;
 import com.backend.sketchbrain.sketchbrainbackend.result.vo.UpdateResultVo;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -188,6 +190,36 @@ class ResultControllerTest {
                 .andExpect(jsonPath("errors").isNotEmpty())
                 .andExpect(jsonPath("errors[0].fieldName").value("uuid"))
                 .andExpect(jsonPath("errors[0].reason").value("NEED TO INSERT UUID"));
+    }
 
+    @Test
+    @DisplayName("Uuid 를 통한 Result 삭제 Controller 로직이 정상 작동한다.")
+    void deleteResult() throws Exception {
+
+        DeleteResultVo deleteResultVo = new DeleteResultVo("6b2089c5-9f6a-4f51-904e-de10e3c455a1");
+        given(resultService.deleteResult(deleteResultVo.getUuid())).willReturn(1);
+        String content = objectMapper.writeValueAsString(deleteResultVo);
+        mvc.perform(delete("/api/server/result")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("success").value(true));
+    }
+
+    @Test
+    @DisplayName("정상적이지 않은 Result 는 삭제되지 않고, 에러를 반환한다")
+    void deleteInvalidUuidResult() throws Exception{
+
+        DeleteResultVo deleteResultVo = new DeleteResultVo("inva#lid% ^uuid!");
+
+        given(resultService.deleteResult(deleteResultVo.getUuid())).willReturn(0);
+        String content = objectMapper.writeValueAsString(deleteResultVo);
+        mvc.perform(delete("/api/server/result")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message").value(ResultErrorCodeImpl.UKNOWN_UUID_REFERED.getMessage()));
     }
 }

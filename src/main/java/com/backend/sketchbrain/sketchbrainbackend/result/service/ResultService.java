@@ -36,6 +36,10 @@ public class ResultService {
         return resultDao.insertResult(insertResultVo);
     }
 
+    public int deleteResult(String uuid){
+        return resultDao.deleteResult(uuid);
+    }
+
     public int updateResult(UpdateResultVo updateResultVo){return resultDao.updateResult(updateResultVo);}
 
     public List<ArgumentError> checkIncorrectArgInResult(InsertResultVo insertResultVo){

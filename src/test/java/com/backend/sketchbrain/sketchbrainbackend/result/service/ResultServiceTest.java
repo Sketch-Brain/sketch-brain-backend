@@ -115,4 +115,12 @@ class ResultServiceTest {
         updateResultVo.setResult("72.1");
         assertEquals(resultService.checkIncorrectUpdateResultVo(updateResultVo).size(),1);
     }
+
+    @Test
+    @DisplayName("Result 를 삭제하는 Service 로직이 정상 작동한다.")
+    void deleteResult(){
+        String uuid = "181CB408-A561-4AC2-ACFA-B937119CA3E2";
+        given(resultDao.deleteResult(uuid)).willReturn(1);
+        assertEquals(resultService.deleteResult(uuid),1);
+    }
 }

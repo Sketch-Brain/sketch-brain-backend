@@ -1,6 +1,8 @@
 package com.backend.sketchbrain.sketchbrainbackend.result.dao;
 
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
+import com.backend.sketchbrain.sketchbrainbackend.result.vo.InsertResultVo;
+import com.backend.sketchbrain.sketchbrainbackend.result.vo.UpdateResultVo;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -72,11 +74,12 @@ class ResultDaoTest {
         assertTrue(resultDao.listById(id).isEmpty());
     }
 
+
     @Test
     @Transactional
     @DisplayName("DB 에서 Result 에 대한 추가가 정상 작동한다.")
     void insertResult() {
-        Result testData = new Result("testUser","data.csv","model.py","12.0");
+        InsertResultVo testData = new InsertResultVo("ED306A15-93BE-458D-AC59-9CDAB636A4EC","testUser","data.csv","model.py","12.0");
         assertEquals(resultDao.insertResult(testData),1);
     }
 
@@ -84,7 +87,7 @@ class ResultDaoTest {
     @Transactional
     @DisplayName("정상적이지 않은 Result 는 추가되지 않는다.")
     void insertReulstIncorrectData(){
-        Result testIncorrectData = new Result();
+        InsertResultVo testIncorrectData = new InsertResultVo();
         testIncorrectData.setUser("freddie");
         testIncorrectData.setData_name("tmp.csv");
         assertThrows(
@@ -92,5 +95,41 @@ class ResultDaoTest {
                     resultDao.insertResult(testIncorrectData);
                 }
         );
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("DB 에서 Uuid 를 통한 Result 에 대한 갱신이 정상 작동한다.")
+    void updateResult(){
+        InsertResultVo testData = new InsertResultVo("c72843e9-98dc-4539-9b05-ab0005c736f3","testUser","data.csv","model.py","12.0");
+        UpdateResultVo updateResultVo = new UpdateResultVo("c72843e9-98dc-4539-9b05-ab0005c736f3","98.2");
+        resultDao.insertResult(testData);
+        assertEquals(resultDao.updateResult(updateResultVo),1);
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("정상적이지 않은 Uuid 를 통한 Result 에 대한 갱신이 이뤄지지 않는다.")
+    void updateInvalidUuidResult(){
+        UpdateResultVo updateResultVo = new UpdateResultVo("inva!lid@ u%uid^","91.2");
+        assertEquals(resultDao.updateResult(updateResultVo),0);
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("DB 에서 uuid 를 통한 삭제가 정상적으로 작동한다.")
+    void deleteReulst(){
+        String uuid = "c72843e9-98dc-4539-9b05-ab0005c736f3";
+        InsertResultVo testData = new InsertResultVo(uuid,"testUser","data.csv","model.py","12.0");
+        resultDao.insertResult(testData);
+        assertEquals(resultDao.deleteResult(uuid),1);
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("정상적이지 않은 Uuid 를 통한 Result 에 대한 삭제가 이뤄지지 않는다.")
+    void deleteInvalidUuidResult(){
+        String invalidUuid = "inva!lid@ u%uid^";
+        assertEquals(resultDao.deleteResult(invalidUuid),0);
     }
 }

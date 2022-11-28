@@ -1,6 +1,8 @@
 package com.backend.sketchbrain.sketchbrainbackend.result.dao;
 
 import com.backend.sketchbrain.sketchbrainbackend.result.dto.Result;
+import com.backend.sketchbrain.sketchbrainbackend.result.vo.InsertResultVo;
+import com.backend.sketchbrain.sketchbrainbackend.result.vo.UpdateResultVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,10 +31,23 @@ public class ResultDao {
         return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Result.class),id);
     }
 
-    public int insertResult(Result result){
-        String query = "INSERT INTO result(user,data_name,model_name,result) VALUES(?,?,?,?)";
+    public List<Result> listByUuid(String uuid){
+        String query = "SELECT * FROM result WHERE uuid= ?";
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Result.class),uuid);
+    }
+    public int insertResult(InsertResultVo insertResultVo){
+        String query = "INSERT INTO result(uuid,user,data_name,model_name,result) VALUES(?,?,?,?,?)";
         return jdbcTemplate.update(query,
-                new Object[]{result.getUser(), result.getData_name(), result.getModel_name(), result.getResult()});
+                new Object[]{insertResultVo.getUuid(),insertResultVo.getUser(), insertResultVo.getData_name(), insertResultVo.getModel_name(), insertResultVo.getResult()});
+    }
 
+    public int updateResult(UpdateResultVo updateResultVo){
+        String query = "UPDATE result SET result=? WHERE uuid=?";
+        return jdbcTemplate.update(query,updateResultVo.getResult(),updateResultVo.getUuid());
+    }
+
+    public int deleteResult(String uuid){
+        String query = "DELETE FROM result WHERE uuid=?";
+        return jdbcTemplate.update(query,uuid);
     }
 }
